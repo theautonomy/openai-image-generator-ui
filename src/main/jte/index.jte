@@ -1,6 +1,7 @@
 @param com.example.openai.image.generator.ui.ImageGenerationRequest request
 @param String imageUrl = null
 @param String error = null
+@param String imageModel = null
 @param String generationTime = null
 @param String imageSize = null
 @param String imageQuality = null
@@ -19,9 +20,20 @@
                         placeholder="sunset beach palm trees, peaceful mood..."
                         rows="2"
                     ></textarea>
-                    <button type="button" class="btn btn-suggest" id="suggestBtn">
-                        Suggest Prompt
-                    </button>
+                    <div class="suggest-row">
+                        <select id="promptStyle" class="style-select">
+                            <option value="creative">Creative</option>
+                            <option value="professional">Professional</option>
+                            <option value="fun">Fun & Playful</option>
+                            <option value="realistic">Realistic Photo</option>
+                            <option value="artistic">Fine Art</option>
+                            <option value="fantasy">Fantasy</option>
+                            <option value="minimalist">Minimalist</option>
+                        </select>
+                        <button type="button" class="btn btn-suggest" id="suggestBtn">
+                            Suggest Prompt
+                        </button>
+                    </div>
                 </div>
 
                 <div class="separator">
@@ -107,6 +119,10 @@
             <div class="card image-card">
                 @if(imageUrl != null)
                     <div class="image-meta">
+                        <div class="meta-row">
+                            <span class="meta-label">Model:</span>
+                            <span class="meta-value">${imageModel}</span>
+                        </div>
                         <div class="meta-row">
                             <span class="meta-label">Time:</span>
                             <span class="meta-value">${generationTime}s</span>

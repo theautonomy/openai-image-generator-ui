@@ -35,19 +35,15 @@ public class ImageController {
 
     @PostMapping("/suggest")
     @ResponseBody
-    public Map<String, String> suggestPrompt(@RequestParam String keywords) {
+    public Map<String, String> suggestPrompt(
+            @RequestParam String keywords,
+            @RequestParam(defaultValue = "creative") String promptStyle) {
         if (keywords == null || keywords.isBlank()) {
             return Map.of("error", "Please enter some keywords");
         }
 
         try {
-            String systemPrompt =
-                    """
-                You are an expert at creating detailed, vivid image generation prompts for DALL-E 3.
-                Given some keywords or a brief description, create a detailed, creative prompt that will generate a stunning image.
-                The prompt should be descriptive, include artistic style, lighting, mood, and composition details.
-                Return ONLY the prompt text, nothing else. Keep it under 200 words.
-                """;
+            String systemPrompt = getSystemPrompt(promptStyle);
 
             String userMessage =
                     "Create an image generation prompt based on these keywords: " + keywords;
@@ -59,6 +55,53 @@ public class ImageController {
         } catch (Exception e) {
             return Map.of("error", "Error generating suggestion: " + e.getMessage());
         }
+    }
+
+    private String getSystemPrompt(String style) {
+        return switch (style) {
+            case "professional" -> """
+                You are an expert at creating professional, polished image generation prompts for DALL-E 3.
+                Create prompts for high-quality professional artwork, corporate imagery, or refined illustrations.
+                Focus on clean compositions, professional lighting, and sophisticated aesthetics.
+                Return ONLY the prompt text, nothing else. Keep it under 200 words.
+                """;
+            case "fun" -> """
+                You are a creative artist who loves fun, whimsical, and playful imagery!
+                Create prompts that are colorful, cheerful, and full of joy and humor.
+                Think cartoon-like, exaggerated features, bright colors, and happy vibes.
+                Return ONLY the prompt text, nothing else. Keep it under 200 words.
+                """;
+            case "realistic" -> """
+                You are a photography expert creating hyper-realistic image prompts for DALL-E 3.
+                Focus on photorealistic details, natural lighting, realistic textures, and believable scenes.
+                Include camera settings, lens types, and photography techniques in your descriptions.
+                Return ONLY the prompt text, nothing else. Keep it under 200 words.
+                """;
+            case "artistic" -> """
+                You are a fine art curator creating prompts inspired by classical and modern art movements.
+                Reference specific art styles like impressionism, surrealism, art nouveau, or abstract expressionism.
+                Focus on artistic techniques, brush strokes, color palettes, and emotional depth.
+                Return ONLY the prompt text, nothing else. Keep it under 200 words.
+                """;
+            case "fantasy" -> """
+                You are a fantasy world builder creating magical and mythical image prompts.
+                Include dragons, wizards, enchanted forests, magical creatures, and epic landscapes.
+                Focus on otherworldly lighting, mystical atmospheres, and epic fantasy elements.
+                Return ONLY the prompt text, nothing else. Keep it under 200 words.
+                """;
+            case "minimalist" -> """
+                You are a minimalist designer creating clean, simple image prompts.
+                Focus on negative space, simple shapes, limited color palettes, and elegant simplicity.
+                Less is more - create prompts that emphasize clarity and refined aesthetics.
+                Return ONLY the prompt text, nothing else. Keep it under 200 words.
+                """;
+            default -> """
+                You are an expert at creating detailed, vivid image generation prompts for DALL-E 3.
+                Given some keywords or a brief description, create a detailed, creative prompt that will generate a stunning image.
+                The prompt should be descriptive, include artistic style, lighting, mood, and composition details.
+                Return ONLY the prompt text, nothing else. Keep it under 200 words.
+                """;
+        };
     }
 
     @PostMapping("/generate")
@@ -95,6 +138,7 @@ public class ImageController {
 
             model.put("request", request);
             model.put("imageUrl", imageUrl);
+            model.put("imageModel", "DALL-E 3");
             model.put("generationTime", String.format("%.1f", duration / 1000.0));
             model.put("imageSize", request.size());
             model.put("imageQuality", request.quality());

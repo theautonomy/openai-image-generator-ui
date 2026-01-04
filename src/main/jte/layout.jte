@@ -214,8 +214,20 @@
             transform: none;
         }
 
-        .btn-suggest {
+        .suggest-row {
+            display: flex;
+            gap: 0.5rem;
             margin-top: 0.5rem;
+        }
+
+        .style-select {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-suggest {
+            flex: 1;
             background: linear-gradient(90deg, #9b59b6, #8e44ad);
             padding: 0.6rem 1rem;
             font-size: 0.9rem;
@@ -341,7 +353,9 @@
         document.getElementById('suggestBtn').addEventListener('click', async function() {
             const keywordsTextarea = document.getElementById('keywords');
             const promptTextarea = document.getElementById('prompt');
+            const promptStyleSelect = document.getElementById('promptStyle');
             const keywords = keywordsTextarea.value.trim();
+            const promptStyle = promptStyleSelect.value;
             const suggestBtn = this;
 
             if (!keywords) {
@@ -355,6 +369,7 @@
             try {
                 const formData = new FormData();
                 formData.append('keywords', keywords);
+                formData.append('promptStyle', promptStyle);
 
                 const response = await fetch('/suggest', {
                     method: 'POST',
