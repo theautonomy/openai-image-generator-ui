@@ -23,7 +23,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -37,13 +37,62 @@
             background-clip: text;
         }
 
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .left-panel {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .right-panel {
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 2rem;
-            margin-bottom: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .image-card {
+            background: rgba(255, 255, 255, 0.05);
+            height: 100%;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .placeholder {
+            text-align: center;
+            color: #4a5568;
+            padding: 2rem;
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .left-panel {
+                position: static;
+            }
         }
 
         .form-group {
@@ -88,9 +137,9 @@
         }
 
         .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
         }
 
         .btn {
