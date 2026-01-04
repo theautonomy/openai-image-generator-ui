@@ -123,8 +123,39 @@
         }
 
         textarea {
-            min-height: 100px;
             resize: vertical;
+        }
+
+        textarea[rows="2"] {
+            min-height: 60px;
+        }
+
+        textarea[rows="5"] {
+            min-height: 150px;
+        }
+
+        textarea[rows="6"] {
+            min-height: 180px;
+        }
+
+        .separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: #4a5568;
+            font-size: 0.85rem;
+        }
+
+        .separator::before,
+        .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .separator span {
+            padding: 0 1rem;
         }
 
         select {
@@ -138,8 +169,24 @@
 
         .options-grid {
             display: flex;
-            flex-direction: column;
-            gap: 0;
+            flex-direction: row;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .options-grid .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .options-grid label {
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .options-grid select {
+            padding: 0.5rem;
+            font-size: 0.85rem;
         }
 
         .btn {
@@ -165,6 +212,17 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-suggest {
+            margin-top: 0.5rem;
+            background: linear-gradient(90deg, #9b59b6, #8e44ad);
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-suggest:hover {
+            box-shadow: 0 4px 20px rgba(155, 89, 182, 0.4);
         }
 
         .error {
@@ -218,6 +276,54 @@
             font-style: italic;
             color: #a0aec0;
         }
+
+        .image-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 210, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-label {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .meta-value {
+            color: #00d2ff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .revised-prompt {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+
+        .revised-prompt strong {
+            color: #00d2ff;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .revised-prompt p {
+            line-height: 1.5;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -225,9 +331,49 @@
         ${content}
     </div>
     <script>
-        document.querySelector('form').addEventListener('submit', function() {
-            document.querySelector('.btn').disabled = true;
-            document.querySelector('.btn').textContent = 'Generating...';
+        // Handle generate form submission
+        document.getElementById('generateForm').addEventListener('submit', function() {
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('generateBtn').textContent = 'Generating...';
+        });
+
+        // Handle suggest button click
+        document.getElementById('suggestBtn').addEventListener('click', async function() {
+            const keywordsTextarea = document.getElementById('keywords');
+            const promptTextarea = document.getElementById('prompt');
+            const keywords = keywordsTextarea.value.trim();
+            const suggestBtn = this;
+
+            if (!keywords) {
+                alert('Please enter some keywords first');
+                return;
+            }
+
+            suggestBtn.disabled = true;
+            suggestBtn.textContent = 'Thinking...';
+
+            try {
+                const formData = new FormData();
+                formData.append('keywords', keywords);
+
+                const response = await fetch('/suggest', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.prompt) {
+                    promptTextarea.value = data.prompt;
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                suggestBtn.disabled = false;
+                suggestBtn.textContent = 'Suggest Prompt';
+            }
         });
     </script>
 </body>

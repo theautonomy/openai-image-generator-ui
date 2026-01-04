@@ -1,6 +1,10 @@
 @param com.example.openai.image.generator.ui.ImageGenerationRequest request
 @param String imageUrl = null
 @param String error = null
+@param String generationTime = null
+@param String imageSize = null
+@param String imageQuality = null
+@param String imageStyle = null
 
 @template.layout(content = @`
     <h1>AI Image Generator</h1>
@@ -8,34 +12,51 @@
     <div class="main-layout">
         <div class="left-panel">
             <div class="card">
-                <form action="/generate" method="post">
+                <div class="form-group">
+                    <label for="keywords">Your idea (keywords or brief description)</label>
+                    <textarea
+                        id="keywords"
+                        placeholder="sunset beach palm trees, peaceful mood..."
+                        rows="2"
+                    ></textarea>
+                    <button type="button" class="btn btn-suggest" id="suggestBtn">
+                        Suggest Prompt
+                    </button>
+                </div>
+
+                <div class="separator">
+                    <span>or edit the prompt below directly</span>
+                </div>
+
+                <form action="/generate" method="post" id="generateForm">
                     <div class="form-group">
-                        <label for="prompt">Describe the image you want to create</label>
+                        <label for="prompt">Image generation prompt</label>
                         <textarea
                             id="prompt"
                             name="prompt"
-                            placeholder="A serene mountain landscape at sunset with a crystal clear lake reflecting the golden sky..."
+                            placeholder="A detailed prompt for DALL-E will appear here, or write your own..."
+                            rows="6"
                         >${request.prompt()}</textarea>
                     </div>
 
                     <div class="options-grid">
                         <div class="form-group">
-                            <label for="size">Image Size</label>
+                            <label for="size">Size</label>
                             <select id="size" name="size">
                                 @if(request.size().equals("1024x1024"))
-                                    <option value="1024x1024" selected>Square (1024x1024)</option>
+                                    <option value="1024x1024" selected>Square</option>
                                 @else
-                                    <option value="1024x1024">Square (1024x1024)</option>
+                                    <option value="1024x1024">Square</option>
                                 @endif
                                 @if(request.size().equals("1792x1024"))
-                                    <option value="1792x1024" selected>Landscape (1792x1024)</option>
+                                    <option value="1792x1024" selected>Landscape</option>
                                 @else
-                                    <option value="1792x1024">Landscape (1792x1024)</option>
+                                    <option value="1792x1024">Landscape</option>
                                 @endif
                                 @if(request.size().equals("1024x1792"))
-                                    <option value="1024x1792" selected>Portrait (1024x1792)</option>
+                                    <option value="1024x1792" selected>Portrait</option>
                                 @else
-                                    <option value="1024x1792">Portrait (1024x1792)</option>
+                                    <option value="1024x1792">Portrait</option>
                                 @endif
                             </select>
                         </div>
@@ -73,7 +94,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn">Generate Image</button>
+                    <button type="submit" class="btn" id="generateBtn">Generate Image</button>
                 </form>
             </div>
 
@@ -85,8 +106,23 @@
         <div class="right-panel">
             <div class="card image-card">
                 @if(imageUrl != null)
-                    <div class="prompt-display">
-                        <strong>Prompt:</strong> ${request.prompt()}
+                    <div class="image-meta">
+                        <div class="meta-row">
+                            <span class="meta-label">Time:</span>
+                            <span class="meta-value">${generationTime}s</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Size:</span>
+                            <span class="meta-value">${imageSize}</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Quality:</span>
+                            <span class="meta-value">${imageQuality}</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Style:</span>
+                            <span class="meta-value">${imageStyle}</span>
+                        </div>
                     </div>
                     <div class="image-container">
                         <img src="${imageUrl}" alt="Generated image">
