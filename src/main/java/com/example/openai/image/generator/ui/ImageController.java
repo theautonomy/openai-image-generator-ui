@@ -1,7 +1,10 @@
 package com.example.openai.image.generator.ui;
 
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.image.ImageModel;
@@ -43,12 +46,12 @@ public class ImageController {
         }
 
         try {
-            String systemPrompt = getSystemPrompt(promptStyle);
+            var systemMessage = new SystemMessage(getSystemPrompt(promptStyle));
+            var userMessage = new UserMessage(
+                    "Create an image generation prompt based on these keywords: " + keywords);
 
-            String userMessage =
-                    "Create an image generation prompt based on these keywords: " + keywords;
-
-            var response = chatModel.call(new Prompt(systemPrompt + "\n\n" + userMessage));
+            var prompt = new Prompt(List.of(systemMessage, userMessage));
+            var response = chatModel.call(prompt);
             String suggestedPrompt = response.getResult().getOutput().getText().trim();
 
             return Map.of("prompt", suggestedPrompt);
