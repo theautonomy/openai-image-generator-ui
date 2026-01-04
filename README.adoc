@@ -14,14 +14,15 @@ A Spring Boot web application that generates images using OpenAI's DALL-E 3 mode
 == Tech Stack
 
 * Spring Boot 3.5
-* Spring AI 1.1 (OpenAI integration)
+* Spring AI 1.1 (OpenAI + Ollama integration)
 * JTE (Java Template Engine)
 * Java 21
 
 == Prerequisites
 
 * Java 21+
-* OpenAI API Key
+* OpenAI API Key (for image generation)
+* Ollama (optional, for local prompt suggestions)
 
 == Configuration
 
@@ -41,10 +42,31 @@ spring.ai.openai.api-key=your-api-key-here
 
 == Running the Application
 
+=== Default Profile (OpenAI for everything)
+
 [source,bash]
 ----
 ./mvnw spring-boot:run
 ----
+
+=== Ollama Profile (Ollama for chat, OpenAI for images)
+
+First, make sure Ollama is running with a model:
+
+[source,bash]
+----
+ollama pull llama3.2
+ollama serve
+----
+
+Then run with the ollama profile:
+
+[source,bash]
+----
+./mvnw spring-boot:run -Dspring-boot.run.profiles=ollama
+----
+
+NOTE: Ollama is used for prompt suggestions only. Image generation still requires OpenAI (DALL-E 3) since Ollama doesn't support image generation.
 
 Then open http://localhost:8888 in your browser.
 

@@ -31,6 +31,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-ollama</artifactId>
+            <version>${SPRING_AI_VERSION}</version>
+        </dependency>
+
+        <dependency>
             <groupId>gg.jte</groupId>
             <artifactId>jte</artifactId>
             <version>${jte.version}</version>
