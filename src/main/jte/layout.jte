@@ -138,6 +138,10 @@
             min-height: 180px;
         }
 
+        textarea[rows="10"] {
+            min-height: 280px;
+        }
+
         .separator {
             display: flex;
             align-items: center;
@@ -163,7 +167,7 @@
         }
 
         select option {
-            background: #1a1a2e;
+            background: #2d3748;
             color: #fff;
         }
 
@@ -218,23 +222,32 @@
             display: flex;
             gap: 0.5rem;
             margin-top: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .style-select-group {
+            flex: 1;
+        }
+
+        .style-select-group label {
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
         }
 
         .style-select {
-            flex: 1;
+            width: 100%;
             padding: 0.6rem 0.75rem;
             font-size: 0.85rem;
         }
 
         .btn-suggest {
             flex: 1;
-            background: linear-gradient(90deg, #9b59b6, #8e44ad);
             padding: 0.6rem 1rem;
             font-size: 0.9rem;
         }
 
-        .btn-suggest:hover {
-            box-shadow: 0 4px 20px rgba(155, 89, 182, 0.4);
+        .btn-download {
+            margin-top: 1rem;
         }
 
         .error {
@@ -390,6 +403,17 @@
                 suggestBtn.textContent = 'Suggest Prompt';
             }
         });
+
+        // Handle download button click
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function() {
+                const imageUrl = this.dataset.url;
+                // Use backend proxy to download (avoids CORS)
+                const downloadUrl = '/download?url=' + encodeURIComponent(imageUrl);
+                window.location.href = downloadUrl;
+            });
+        }
     </script>
 </body>
 </html>

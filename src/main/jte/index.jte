@@ -21,15 +21,18 @@
                         rows="2"
                     ></textarea>
                     <div class="suggest-row">
-                        <select id="promptStyle" class="style-select">
-                            <option value="creative">Creative</option>
-                            <option value="professional">Professional</option>
-                            <option value="fun">Fun & Playful</option>
-                            <option value="realistic">Realistic Photo</option>
-                            <option value="artistic">Fine Art</option>
-                            <option value="fantasy">Fantasy</option>
-                            <option value="minimalist">Minimalist</option>
-                        </select>
+                        <div class="style-select-group">
+                            <label for="promptStyle">Style</label>
+                            <select id="promptStyle" class="style-select">
+                                <option value="creative">Creative</option>
+                                <option value="professional">Professional</option>
+                                <option value="fun">Fun & Playful</option>
+                                <option value="realistic">Realistic Photo</option>
+                                <option value="artistic">Fine Art</option>
+                                <option value="fantasy">Fantasy</option>
+                                <option value="minimalist">Minimalist</option>
+                            </select>
+                        </div>
                         <button type="button" class="btn btn-suggest" id="suggestBtn">
                             Suggest Prompt
                         </button>
@@ -40,14 +43,14 @@
                     <span>or edit the prompt below directly</span>
                 </div>
 
-                <form action="/generate" method="post" id="generateForm">
+                <form action="/" method="post" id="generateForm">
                     <div class="form-group">
                         <label for="prompt">Image generation prompt</label>
                         <textarea
                             id="prompt"
                             name="prompt"
                             placeholder="A detailed prompt for DALL-E will appear here, or write your own..."
-                            rows="6"
+                            rows="10"
                         >${request.prompt()}</textarea>
                     </div>
 
@@ -141,8 +144,11 @@
                         </div>
                     </div>
                     <div class="image-container">
-                        <img src="${imageUrl}" alt="Generated image">
+                        <img src="${imageUrl}" alt="Generated image" id="generatedImage">
                     </div>
+                    <button type="button" class="btn btn-download" id="downloadBtn" data-url="${imageUrl}">
+                        Download Image
+                    </button>
                 @else
                     <div class="placeholder">
                         <div class="placeholder-icon">🎨</div>

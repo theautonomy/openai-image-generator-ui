@@ -1,5 +1,7 @@
 package com.example.openai.image.generator.ui;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,9 @@ import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
 import org.springframework.ai.openai.OpenAiImageOptions;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -47,8 +52,10 @@ public class ImageController {
 
         try {
             var systemMessage = new SystemMessage(getSystemPrompt(promptStyle));
-            var userMessage = new UserMessage(
-                    "Create an image generation prompt based on these keywords: " + keywords);
+            var userMessage =
+                    new UserMessage(
+                            "Create an image generation prompt based on these keywords: "
+                                    + keywords);
 
             var prompt = new Prompt(List.of(systemMessage, userMessage));
             var response = chatModel.call(prompt);
@@ -107,7 +114,7 @@ public class ImageController {
         };
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/")
     public String generateImage(
             @ModelAttribute ImageGenerationRequest request, Map<String, Object> model) {
         if (request.prompt() == null || request.prompt().isBlank()) {
@@ -153,5 +160,17 @@ public class ImageController {
         }
 
         return "index";
+    }
+
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadImage(@RequestParam String url) throws IOException {
+        // Fetch image from OpenAI URL
+        byte[] imageBytes = URI.create(url).toURL().openStream().readAllBytes();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        headers.setContentDispositionFormData("attachment", "generated-image.png");
+
+        return ResponseEntity.ok().headers(headers).body(imageBytes);
     }
 }
