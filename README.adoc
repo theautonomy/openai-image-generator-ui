@@ -2,6 +2,8 @@
 
 A Spring Boot web application that generates images using OpenAI's DALL-E 3 model, with AI-assisted prompt suggestions.
 
+image::docs/ai-image-generator.png[AI Image Generator Screenshot, align="center"]
+
 == Features
 
 * *AI Image Generation* - Generate images using DALL-E 3
